@@ -40,8 +40,6 @@ Install all the necessary packages:
 npm install
 Create a .env.local file and add the necessary environment variables (see .env.example).
 Start the frontend application:
-code
-Bash
+
 npm run dev
-code
-Code
+
