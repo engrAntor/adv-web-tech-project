@@ -77,11 +77,17 @@ import { EmailModule } from './email/email.module';
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT || '5432'),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      // Use DATABASE_URL if available, otherwise use individual env vars
+      ...(process.env.DATABASE_URL
+        ? { url: process.env.DATABASE_URL }
+        : {
+            host: process.env.DB_HOST || 'localhost',
+            port: parseInt(process.env.DB_PORT || '5432'),
+            username: process.env.DB_USERNAME || 'postgres',
+            password: process.env.DB_PASSWORD || '',
+            database: process.env.DB_NAME || 'online_learning',
+          }),
+      ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
       entities: [
         // Core entities
         User,
