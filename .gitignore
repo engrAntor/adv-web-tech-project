@@ -126,7 +126,9 @@ next-env.d.ts
 *.pem
 *.key
 *.crt
-certificates/
+# SSL certificates folders (not the code module)
+/backend/certificates/
+/frontend/certificates/
 
 # ===============================
 # Misc
