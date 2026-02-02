@@ -1,0 +1,15 @@
+{
+  "name": "adv-web-tech-project",
+  "version": "1.0.0",
+  "description": "A project with a NestJS backend and a Next.js frontend.",
+  "main": "index.js",
+    "scripts": {
+      "start": "concurrently \"cd adv-web-tech-project-main/backend && npm run start:dev\" \"cd adv-web-tech-project-main/frontend && npm run dev\""
+    },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
