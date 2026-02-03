@@ -4,10 +4,41 @@ Django settings for chatbot_project project.
 import os
 from pathlib import Path
 from datetime import timedelta
+from urllib.parse import urlparse, urlunparse, quote
 from dotenv import load_dotenv
 import dj_database_url
 
 load_dotenv()
+
+
+def fix_database_url(url):
+    """URL-encode the password portion of a database URL to handle special characters."""
+    if not url:
+        return url
+    try:
+        parsed = urlparse(url)
+        if parsed.password:
+            # Re-encode the password to handle special characters
+            encoded_password = quote(parsed.password, safe='')
+            # Reconstruct the netloc with encoded password
+            if parsed.username:
+                netloc = f"{parsed.username}:{encoded_password}@{parsed.hostname}"
+            else:
+                netloc = parsed.hostname
+            if parsed.port:
+                netloc += f":{parsed.port}"
+            # Reconstruct the URL
+            return urlunparse((
+                parsed.scheme,
+                netloc,
+                parsed.path,
+                parsed.params,
+                parsed.query,
+                parsed.fragment
+            ))
+    except Exception:
+        pass
+    return url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -75,6 +106,8 @@ DATABASES = {
 # Use PostgreSQL in production if DATABASE_URL is set
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
+    # Fix URL encoding for special characters in password
+    DATABASE_URL = fix_database_url(DATABASE_URL)
     DATABASES['default'] = dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
 
 # Custom User Model
