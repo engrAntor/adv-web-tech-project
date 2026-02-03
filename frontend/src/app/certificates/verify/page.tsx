@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -24,7 +24,24 @@ import {
 import { certificateService, PublicCertificate } from '@/services/api.service';
 import { toast } from 'sonner';
 
+// Wrap the main content in Suspense for useSearchParams
 export default function CertificateVerifyPage() {
+  return (
+    <Suspense fallback={<CertificateVerifyLoading />}>
+      <CertificateVerifyContent />
+    </Suspense>
+  );
+}
+
+function CertificateVerifyLoading() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    </div>
+  );
+}
+
+function CertificateVerifyContent() {
   const searchParams = useSearchParams();
   const codeFromUrl = searchParams.get('code');
 
