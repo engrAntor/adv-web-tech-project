@@ -72,7 +72,7 @@ import { EmailModule } from './email/email.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'frontend-dist'),
+      rootPath: join(__dirname, '..', '..', 'frontend', 'out'),
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
