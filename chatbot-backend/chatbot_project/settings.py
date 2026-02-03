@@ -103,12 +103,32 @@ DATABASES = {
     }
 }
 
-# Use PostgreSQL in production if DATABASE_URL is set
+# Use PostgreSQL in production - supports both DATABASE_URL and individual env vars
+DB_HOST = os.getenv('DB_HOST')
+DB_NAME = os.getenv('DB_NAME')
 DATABASE_URL = os.getenv('DATABASE_URL')
-if DATABASE_URL:
-    # Fix URL encoding for special characters in password
+
+# Prefer individual env vars (avoids URL encoding issues with special chars in password)
+if DB_HOST and DB_NAME:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': DB_HOST,
+        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': DB_NAME,
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'CONN_MAX_AGE': 600,
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+    }
+elif DATABASE_URL:
+    # Try DATABASE_URL with encoding fix
     DATABASE_URL = fix_database_url(DATABASE_URL)
-    DATABASES['default'] = dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
+    try:
+        DATABASES['default'] = dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
+    except Exception:
+        pass  # Fall back to SQLite if parsing fails
 
 # Custom User Model
 AUTH_USER_MODEL = 'api.User'
