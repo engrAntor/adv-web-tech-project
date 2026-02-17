@@ -85,7 +85,7 @@ export default function CourseDetailPage() {
                 setUserRating(existingRating.rating);
                 setUserReview(existingRating.review || '');
               }
-            } catch {}
+            } catch { }
           } catch (enrollError: any) {
             // Silently handle auth errors - treat as not enrolled
             if (enrollError?.response?.status !== 401) {
@@ -446,11 +446,10 @@ export default function CourseDetailPage() {
                           className="focus:outline-none"
                         >
                           <Star
-                            className={`h-8 w-8 ${
-                              star <= userRating
+                            className={`h-8 w-8 ${star <= userRating
                                 ? 'fill-yellow-400 text-yellow-400'
                                 : 'text-muted-foreground'
-                            }`}
+                              }`}
                           />
                         </button>
                       ))}
@@ -495,11 +494,10 @@ export default function CourseDetailPage() {
                                 {[...Array(5)].map((_, i) => (
                                   <Star
                                     key={i}
-                                    className={`h-4 w-4 ${
-                                      i < rating.rating
+                                    className={`h-4 w-4 ${i < rating.rating
                                         ? 'fill-yellow-400 text-yellow-400'
                                         : 'text-muted-foreground'
-                                    }`}
+                                      }`}
                                   />
                                 ))}
                               </div>
@@ -626,4 +624,19 @@ export default function CourseDetailPage() {
       </div>
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  try {
+    // Fetch courses for static generation
+    // In a real app with many courses, you might limit this or use a different strategy
+    const response = await courseService.getAll({ limit: 100 });
+
+    return response.courses.map((course) => ({
+      courseId: course.id.toString(),
+    }));
+  } catch (error) {
+    console.error('Error generating static params for courses:', error);
+    return [];
+  }
 }

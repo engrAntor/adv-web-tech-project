@@ -426,7 +426,7 @@ export default function CheckoutPage() {
                   >
                     <div className="grid gap-4">
                       <div className="flex items-center space-x-4 border rounded-lg p-4 cursor-pointer hover:bg-muted/50"
-                           onClick={() => setPaymentMethod(PaymentMethod.STRIPE)}>
+                        onClick={() => setPaymentMethod(PaymentMethod.STRIPE)}>
                         <RadioGroupItem value={PaymentMethod.STRIPE} id="stripe" />
                         <Label htmlFor="stripe" className="flex-1 cursor-pointer">
                           <div className="flex items-center gap-3">
@@ -441,7 +441,7 @@ export default function CheckoutPage() {
                       </div>
 
                       <div className="flex items-center space-x-4 border rounded-lg p-4 cursor-pointer hover:bg-muted/50"
-                           onClick={() => setPaymentMethod(PaymentMethod.VISA_BD)}>
+                        onClick={() => setPaymentMethod(PaymentMethod.VISA_BD)}>
                         <RadioGroupItem value={PaymentMethod.VISA_BD} id="visa_bd" />
                         <Label htmlFor="visa_bd" className="flex-1 cursor-pointer">
                           <div className="flex items-center gap-3">
@@ -456,7 +456,7 @@ export default function CheckoutPage() {
                       </div>
 
                       <div className="flex items-center space-x-4 border rounded-lg p-4 cursor-pointer hover:bg-muted/50"
-                           onClick={() => setPaymentMethod(PaymentMethod.BKASH)}>
+                        onClick={() => setPaymentMethod(PaymentMethod.BKASH)}>
                         <RadioGroupItem value={PaymentMethod.BKASH} id="bkash" />
                         <Label htmlFor="bkash" className="flex-1 cursor-pointer">
                           <div className="flex items-center gap-3">
@@ -514,4 +514,16 @@ export default function CheckoutPage() {
       </div>
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  try {
+    const response = await courseService.getAll({ limit: 100 });
+    return response.courses.map((course) => ({
+      courseId: course.id.toString(),
+    }));
+  } catch (error) {
+    console.error('Error generating static params for checkout:', error);
+    return [];
+  }
 }

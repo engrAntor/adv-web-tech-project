@@ -332,8 +332,8 @@ export default function InstructorCourseContentPage() {
                         formData.contentType === ContentType.PDF
                           ? '.pdf'
                           : formData.contentType === ContentType.VIDEO
-                          ? 'video/*'
-                          : '.pdf,.doc,.docx,.ppt,.pptx'
+                            ? 'video/*'
+                            : '.pdf,.doc,.docx,.ppt,.pptx'
                       }
                       className="hidden"
                     />
@@ -430,9 +430,8 @@ export default function InstructorCourseContentPage() {
               {contents.map((content, index) => (
                 <div
                   key={content.id}
-                  className={`flex items-center justify-between p-4 rounded-lg border ${
-                    !content.isPublished ? 'bg-muted/50' : ''
-                  }`}
+                  className={`flex items-center justify-between p-4 rounded-lg border ${!content.isPublished ? 'bg-muted/50' : ''
+                    }`}
                 >
                   <div className="flex items-center gap-4">
                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold text-sm">
@@ -532,4 +531,16 @@ export default function InstructorCourseContentPage() {
       </AlertDialog>
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  try {
+    const response = await courseService.getAll({ limit: 100 });
+    return response.courses.map((course) => ({
+      courseId: course.id.toString(),
+    }));
+  } catch (error) {
+    console.error('Error generating static params for instructor course content:', error);
+    return [];
+  }
 }

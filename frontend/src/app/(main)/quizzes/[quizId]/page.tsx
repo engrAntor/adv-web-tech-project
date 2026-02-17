@@ -150,9 +150,8 @@ export default function QuizPage() {
       <div className="max-w-2xl mx-auto">
         <Card>
           <CardHeader className="text-center">
-            <div className={`mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-4 ${
-              result.passed ? 'bg-green-100' : 'bg-red-100'
-            }`}>
+            <div className={`mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-4 ${result.passed ? 'bg-green-100' : 'bg-red-100'
+              }`}>
               {result.passed ? (
                 <Trophy className="h-10 w-10 text-green-600" />
               ) : (
@@ -238,9 +237,8 @@ export default function QuizPage() {
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-xl font-bold">{quiz.title}</h1>
-            <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-              timeLeft < 60 ? 'bg-red-100 text-red-700' : 'bg-muted'
-            }`}>
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${timeLeft < 60 ? 'bg-red-100 text-red-700' : 'bg-muted'
+              }`}>
               <Clock className="h-4 w-4" />
               <span className="font-mono font-bold">{formatTime(timeLeft)}</span>
             </div>
@@ -268,11 +266,10 @@ export default function QuizPage() {
                 {currentQuestion.options.map((option, index) => (
                   <div
                     key={index}
-                    className={`flex items-center space-x-3 p-4 rounded-lg border cursor-pointer transition-colors ${
-                      answers[currentQuestion.id] === index
+                    className={`flex items-center space-x-3 p-4 rounded-lg border cursor-pointer transition-colors ${answers[currentQuestion.id] === index
                         ? 'border-primary bg-primary/5'
                         : 'hover:bg-muted'
-                    }`}
+                      }`}
                     onClick={() => handleAnswerSelect(currentQuestion.id, index)}
                   >
                     <RadioGroupItem value={index.toString()} id={`option-${index}`} />
@@ -323,11 +320,10 @@ export default function QuizPage() {
                 key={index}
                 variant={currentQuestionIndex === index ? 'default' : 'outline'}
                 size="sm"
-                className={`w-10 h-10 ${
-                  answers[questions[index].id] !== undefined && currentQuestionIndex !== index
+                className={`w-10 h-10 ${answers[questions[index].id] !== undefined && currentQuestionIndex !== index
                     ? 'bg-green-100 border-green-300 text-green-700'
                     : ''
-                }`}
+                  }`}
                 onClick={() => setCurrentQuestionIndex(index)}
               >
                 {index + 1}
@@ -338,4 +334,16 @@ export default function QuizPage() {
       )}
     </>
   );
+}
+
+export async function generateStaticParams() {
+  try {
+    const quizzes = await quizService.getAll();
+    return quizzes.map((quiz) => ({
+      quizId: quiz.id.toString(),
+    }));
+  } catch (error) {
+    console.error('Error generating static params for quizzes:', error);
+    return [];
+  }
 }
