@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { LogOut, User as UserIcon, LayoutDashboard } from "lucide-react";
 import { userService } from "@/services/api.service";
+import { getAvatarUrl } from "@/lib/utils";
 
 export function UserNav() {
   const { user, logout } = useAuth();
@@ -46,15 +47,7 @@ export function UserNav() {
     return user.email.charAt(0).toUpperCase();
   };
 
-  const getAvatarUrl = () => {
-    if (profileData?.avatar) {
-      if (profileData.avatar.startsWith('http')) {
-        return profileData.avatar;
-      }
-      return `https://localhost:3000${profileData.avatar}`;
-    }
-    return '';
-  };
+
 
   const displayName = profileData?.firstName
     ? `${profileData.firstName} ${profileData.lastName || ''}`.trim()
@@ -69,46 +62,46 @@ export function UserNav() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-9 w-9">
-              <AvatarImage src={getAvatarUrl()} alt={displayName} />
+              <AvatarImage src={getAvatarUrl(user?.avatar)} alt={displayName} />
               <AvatarFallback className="bg-primary text-primary-foreground">
                 {getInitials()}
               </AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none truncate max-w-[180px]">
-              {displayName}
-            </p>
-            <p className="text-xs leading-none text-muted-foreground truncate max-w-[180px]">
-              {user.email}
-            </p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <Link href="/dashboard">
-            <DropdownMenuItem>
+        <DropdownMenuContent className="w-56" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none truncate max-w-[180px]">
+                {displayName}
+              </p>
+              <p className="text-xs leading-none text-muted-foreground truncate max-w-[180px]">
+                {user.email}
+              </p>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <Link href="/dashboard">
+              <DropdownMenuItem>
                 <LayoutDashboard className="mr-2 h-4 w-4" />
                 <span>Dashboard</span>
-            </DropdownMenuItem>
-          </Link>
-          <Link href="/profile">
-            <DropdownMenuItem>
+              </DropdownMenuItem>
+            </Link>
+            <Link href="/profile">
+              <DropdownMenuItem>
                 <UserIcon className="mr-2 h-4 w-4" />
                 <span>Profile</span>
-            </DropdownMenuItem>
-          </Link>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logout}>
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+              </DropdownMenuItem>
+            </Link>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={logout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

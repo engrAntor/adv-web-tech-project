@@ -32,6 +32,7 @@ import { forumService } from '@/services/api.service';
 import { Forum, ForumPost } from '@/types';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
+import { getAvatarUrl } from '@/lib/utils';
 
 export default function ForumDetailClient() {
     const params = useParams();
@@ -194,7 +195,7 @@ export default function ForumDetailClient() {
                                 <CardContent className="p-4">
                                     <div className="flex items-start gap-4">
                                         <Avatar>
-                                            <AvatarImage src={post.author?.avatar} />
+                                            <AvatarImage src={getAvatarUrl(post.author?.avatar)} />
                                             <AvatarFallback>
                                                 {post.author?.firstName?.[0] || post.author?.email?.[0] || 'U'}
                                             </AvatarFallback>

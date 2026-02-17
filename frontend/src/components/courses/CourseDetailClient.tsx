@@ -14,6 +14,7 @@ import { Progress as ProgressBar } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getAvatarUrl } from '@/lib/utils';
 import {
     Star,
     Clock,
@@ -209,7 +210,7 @@ export default function CourseDetailClient() {
                     {course.instructor && (
                         <div className="flex items-center gap-3 mt-6">
                             <Avatar>
-                                <AvatarImage src={course.instructor.avatar} />
+                                <AvatarImage src={getAvatarUrl(course.instructor.avatar)} />
                                 <AvatarFallback>{course.instructor.firstName?.[0] || course.instructor.email[0]}</AvatarFallback>
                             </Avatar>
                             <div>

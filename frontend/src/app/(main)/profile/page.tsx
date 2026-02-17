@@ -30,6 +30,7 @@ import { KeyRound, UserCircle, Camera, Loader2, Shield, Award, Upload } from 'lu
 import { userService, certificateService } from '@/services/api.service';
 import { Certificate } from '@/types';
 import Link from 'next/link';
+import { getAvatarUrl } from '@/lib/utils';
 
 const profileFormSchema = z.object({
   firstName: z.string().optional(),
@@ -173,15 +174,8 @@ export default function ProfilePage() {
     return user?.email?.[0]?.toUpperCase() || 'U';
   };
 
-  const getAvatarUrl = () => {
-    if (profileData?.avatar) {
-      // If it starts with http, use as is; otherwise prepend the backend URL
-      if (profileData.avatar.startsWith('http')) {
-        return profileData.avatar;
-      }
-      return `https://localhost:3000${profileData.avatar}`;
-    }
-    return '';
+  const getProfileAvatarUrl = () => {
+    return getAvatarUrl(profileData?.avatar);
   };
 
   return (
@@ -214,7 +208,7 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-6 mb-6">
                     <div className="relative group">
                       <Avatar className="h-24 w-24 border-4 border-background shadow-lg">
-                        <AvatarImage src={getAvatarUrl()} />
+                        <AvatarImage src={getProfileAvatarUrl()} />
                         <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
                           {getInitials()}
                         </AvatarFallback>

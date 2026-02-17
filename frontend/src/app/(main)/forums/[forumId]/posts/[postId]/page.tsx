@@ -44,6 +44,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import Link from 'next/link';
+import { getAvatarUrl } from '@/lib/utils';
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -241,7 +242,7 @@ export default function PostDetailPage() {
           {/* Author Info */}
           <div className="flex items-center gap-3 mt-4 pt-4 border-t">
             <Avatar className="h-10 w-10">
-              <AvatarImage src={post.author?.avatar} />
+              <AvatarImage src={getAvatarUrl(post.author?.avatar)} />
               <AvatarFallback>{getInitials(post.author)}</AvatarFallback>
             </Avatar>
             <div>
@@ -309,7 +310,7 @@ export default function PostDetailPage() {
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={comment.author?.avatar} />
+                        <AvatarImage src={getAvatarUrl(comment.author?.avatar)} />
                         <AvatarFallback>{getInitials(comment.author)}</AvatarFallback>
                       </Avatar>
                       <div>

@@ -28,7 +28,7 @@ export class QuizzesService {
     private progressRepository: Repository<Progress>,
     @Inject(forwardRef(() => NotificationsService))
     private notificationsService: NotificationsService,
-  ) {}
+  ) { }
 
   // Quiz methods
   async createQuiz(
@@ -49,11 +49,19 @@ export class QuizzesService {
   }
 
   async findAllQuizzes(): Promise<Quiz[]> {
-    return this.quizRepository.find({
-      where: { isPublished: true },
-      relations: ["course"],
-      order: { sortOrder: "ASC" },
-    });
+    console.log('QuizzesService.findAllQuizzes called');
+    try {
+      const quizzes = await this.quizRepository.find({
+        where: { isPublished: true },
+        relations: ["course"],
+        order: { sortOrder: "ASC" },
+      });
+      console.log(`Found ${quizzes.length} quizzes`);
+      return quizzes;
+    } catch (error) {
+      console.error('Error in QuizzesService.findAllQuizzes:', error);
+      throw error;
+    }
   }
 
   async findAllQuizzesForInstructor(instructorId: number): Promise<Quiz[]> {

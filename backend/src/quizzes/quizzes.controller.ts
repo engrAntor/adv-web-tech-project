@@ -18,11 +18,17 @@ import { UserRole } from "../users/users.entity";
 
 @Controller("quizzes")
 export class QuizzesController {
-  constructor(private readonly quizzesService: QuizzesService) {}
+  constructor(private readonly quizzesService: QuizzesService) { }
 
   @Get()
   async findAll() {
-    return this.quizzesService.findAllQuizzes();
+    try {
+      console.log('Finding all quizzes...');
+      return await this.quizzesService.findAllQuizzes();
+    } catch (error) {
+      console.error('Error in findAll:', error);
+      throw error;
+    }
   }
 
   @Get("instructor")

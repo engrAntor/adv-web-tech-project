@@ -12,8 +12,8 @@ async function bootstrap() {
 
   let app: NestExpressApplication;
 
-  // Only use HTTPS in development (when certificates exist)
-  if (!isProduction) {
+  // Only use HTTPS in development (when certificates exist) and if not disabled
+  if (!isProduction && process.env.DISABLE_HTTPS !== 'true') {
     const certPath = join(process.cwd(), "certificates", "localhost-key.pem");
     if (fs.existsSync(certPath)) {
       const httpsOptions = {
