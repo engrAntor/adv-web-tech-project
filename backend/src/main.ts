@@ -63,11 +63,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const port = process.env.PORT || 3000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   const protocol = isProduction ? "http" : "https";
   console.log(
-    `✅ NestJS Backend is running on: ${protocol}://localhost:${port}`,
+    `✅ NestJS Backend is running on: ${protocol}://0.0.0.0:${port}`,
   );
   console.log(`✅ Environment: ${isProduction ? "production" : "development"}`);
 }
