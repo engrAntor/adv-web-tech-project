@@ -4,7 +4,7 @@ services:
     env: node
     region: singapore
     plan: free
-    buildCommand: cd backend && npm ci && npm run build && npm prune --production
+    buildCommand: cd backend && NODE_ENV=development npm install && npm run build
     startCommand: cd backend && node dist/main
     healthCheckPath: /
     envVars:
