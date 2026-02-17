@@ -4,8 +4,8 @@ services:
     env: node
     region: singapore
     plan: free
-    buildCommand: cd backend && npm install --include=dev && npx nest build
-    startCommand: cd backend && npm run start:prod
+    buildCommand: cd backend && npm ci && npm run build && npm prune --production
+    startCommand: cd backend && node dist/main
     healthCheckPath: /
     envVars:
       - key: NODE_ENV
