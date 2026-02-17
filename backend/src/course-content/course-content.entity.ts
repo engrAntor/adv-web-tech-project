@@ -7,17 +7,17 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Course } from '../courses/courses.entity';
+} from "typeorm";
+import { Course } from "../courses/courses.entity";
 
 export enum ContentType {
-  PDF = 'pdf',
-  VIDEO = 'video',
-  DOCUMENT = 'document',
-  LINK = 'link',
+  PDF = "pdf",
+  VIDEO = "video",
+  DOCUMENT = "document",
+  LINK = "link",
 }
 
-@Entity('course_content')
+@Entity("course_content")
 export class CourseContent {
   @PrimaryGeneratedColumn()
   id: number;
@@ -25,11 +25,11 @@ export class CourseContent {
   @Column()
   title: string;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: "text" })
   description: string;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: ContentType,
     default: ContentType.PDF,
   })
@@ -56,7 +56,7 @@ export class CourseContent {
   @Column({ default: true })
   isPublished: boolean;
 
-  @ManyToOne(() => Course, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Course, { onDelete: "CASCADE" })
   course: Course;
 
   @Column()

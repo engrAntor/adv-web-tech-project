@@ -1,10 +1,16 @@
 // src/courses/courses.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
-import { Course, CourseCategory, CourseDifficulty } from './courses.entity';
-import { Progress, ProgressStatus } from '../progress/progress.entity';
-import { User } from '../users/users.entity';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import {
+  Repository,
+  Like,
+  Between,
+  MoreThanOrEqual,
+  LessThanOrEqual,
+} from "typeorm";
+import { Course, CourseCategory, CourseDifficulty } from "./courses.entity";
+import { Progress, ProgressStatus } from "../progress/progress.entity";
+import { User } from "../users/users.entity";
 
 @Injectable()
 export class CoursesService {
@@ -29,39 +35,48 @@ export class CoursesService {
     limit = 20,
     offset = 0,
   ): Promise<{ courses: Course[]; total: number }> {
-    const query = this.courseRepository.createQueryBuilder('course')
-      .leftJoinAndSelect('course.instructor', 'instructor')
-      .where('course.isPublished = :isPublished', { isPublished: true });
+    const query = this.courseRepository
+      .createQueryBuilder("course")
+      .leftJoinAndSelect("course.instructor", "instructor")
+      .where("course.isPublished = :isPublished", { isPublished: true });
 
     if (filters.category) {
-      query.andWhere('LOWER(course.category::text) = LOWER(:category)', { category: filters.category });
+      query.andWhere("LOWER(course.category::text) = LOWER(:category)", {
+        category: filters.category,
+      });
     }
 
     if (filters.difficulty) {
-      query.andWhere('LOWER(course.difficulty::text) = LOWER(:difficulty)', { difficulty: filters.difficulty });
+      query.andWhere("LOWER(course.difficulty::text) = LOWER(:difficulty)", {
+        difficulty: filters.difficulty,
+      });
     }
 
     if (filters.search) {
       query.andWhere(
-        '(LOWER(course.title) LIKE LOWER(:search) OR LOWER(course.description) LIKE LOWER(:search))',
+        "(LOWER(course.title) LIKE LOWER(:search) OR LOWER(course.description) LIKE LOWER(:search))",
         { search: `%${filters.search}%` },
       );
     }
 
     if (filters.minRating) {
-      query.andWhere('course.averageRating >= :minRating', { minRating: filters.minRating });
+      query.andWhere("course.averageRating >= :minRating", {
+        minRating: filters.minRating,
+      });
     }
 
     if (filters.isFree !== undefined) {
-      query.andWhere('course.isFree = :isFree', { isFree: filters.isFree });
+      query.andWhere("course.isFree = :isFree", { isFree: filters.isFree });
     }
 
     if (filters.instructorId) {
-      query.andWhere('course.instructorId = :instructorId', { instructorId: filters.instructorId });
+      query.andWhere("course.instructorId = :instructorId", {
+        instructorId: filters.instructorId,
+      });
     }
 
     const [courses, total] = await query
-      .orderBy('course.createdAt', 'DESC')
+      .orderBy("course.createdAt", "DESC")
       .take(limit)
       .skip(offset)
       .getManyAndCount();
@@ -72,7 +87,7 @@ export class CoursesService {
   async findById(id: number): Promise<Course | null> {
     return this.courseRepository.findOne({
       where: { id },
-      relations: ['instructor'],
+      relations: ["instructor"],
     });
   }
 
@@ -87,8 +102,8 @@ export class CoursesService {
   async getCourses(): Promise<Course[]> {
     return this.courseRepository.find({
       where: { isPublished: true },
-      relations: ['instructor'],
-      order: { createdAt: 'DESC' },
+      relations: ["instructor"],
+      order: { createdAt: "DESC" },
     });
   }
 
@@ -110,10 +125,13 @@ export class CoursesService {
     return this.courseRepository.save(course);
   }
 
-  async updateCourse(id: number, data: Partial<Course>): Promise<Course | null> {
+  async updateCourse(
+    id: number,
+    data: Partial<Course>,
+  ): Promise<Course | null> {
     const course = await this.findById(id);
     if (!course) {
-      throw new NotFoundException('Course not found');
+      throw new NotFoundException("Course not found");
     }
 
     if (data.price !== undefined) {
@@ -132,21 +150,24 @@ export class CoursesService {
   async getProgress(user: User): Promise<Progress[]> {
     return this.progressRepository.find({
       where: { userId: user.id },
-      relations: ['course'],
+      relations: ["course"],
     });
   }
 
-  async getUserProgress(userId: number, courseId: number): Promise<Progress | null> {
+  async getUserProgress(
+    userId: number,
+    courseId: number,
+  ): Promise<Progress | null> {
     return this.progressRepository.findOne({
       where: { userId, courseId },
-      relations: ['course'],
+      relations: ["course"],
     });
   }
 
   async enrollUser(userId: number, courseId: number): Promise<Progress> {
     const course = await this.courseRepository.findOneBy({ id: courseId });
     if (!course) {
-      throw new NotFoundException('Course not found');
+      throw new NotFoundException("Course not found");
     }
 
     const existing = await this.progressRepository.findOne({
@@ -165,7 +186,11 @@ export class CoursesService {
     });
 
     // Update course enrollment count
-    await this.courseRepository.increment({ id: courseId }, 'enrollmentCount', 1);
+    await this.courseRepository.increment(
+      { id: courseId },
+      "enrollmentCount",
+      1,
+    );
 
     return this.progressRepository.save(progress);
   }
@@ -180,7 +205,7 @@ export class CoursesService {
     });
 
     if (!progress) {
-      throw new NotFoundException('Enrollment not found');
+      throw new NotFoundException("Enrollment not found");
     }
 
     let status = ProgressStatus.IN_PROGRESS;
@@ -202,7 +227,7 @@ export class CoursesService {
 
     return this.progressRepository.findOne({
       where: { id: progress.id },
-      relations: ['course'],
+      relations: ["course"],
     });
   }
 
@@ -217,18 +242,18 @@ export class CoursesService {
   async getPopularCourses(limit = 10): Promise<Course[]> {
     return this.courseRepository.find({
       where: { isPublished: true },
-      order: { enrollmentCount: 'DESC' },
+      order: { enrollmentCount: "DESC" },
       take: limit,
-      relations: ['instructor'],
+      relations: ["instructor"],
     });
   }
 
   async getTopRatedCourses(limit = 10): Promise<Course[]> {
     return this.courseRepository.find({
       where: { isPublished: true },
-      order: { averageRating: 'DESC' },
+      order: { averageRating: "DESC" },
       take: limit,
-      relations: ['instructor'],
+      relations: ["instructor"],
     });
   }
 }

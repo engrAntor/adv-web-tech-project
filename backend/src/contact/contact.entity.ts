@@ -1,15 +1,21 @@
 // src/contact/contact.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
-import { User } from '../users/users.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+} from "typeorm";
+import { User } from "../users/users.entity";
 
 export enum ContactStatus {
-  PENDING = 'pending',
-  IN_PROGRESS = 'in_progress',
-  RESOLVED = 'resolved',
-  CLOSED = 'closed',
+  PENDING = "pending",
+  IN_PROGRESS = "in_progress",
+  RESOLVED = "resolved",
+  CLOSED = "closed",
 }
 
-@Entity('contacts')
+@Entity("contacts")
 export class Contact {
   @PrimaryGeneratedColumn()
   id: number;
@@ -23,23 +29,23 @@ export class Contact {
   @Column()
   subject: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   message: string;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: ContactStatus,
     default: ContactStatus.PENDING,
   })
   status: ContactStatus;
 
-  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
+  @ManyToOne(() => User, { nullable: true, onDelete: "SET NULL" })
   user: User;
 
   @Column({ nullable: true })
   userId: number;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: "text" })
   adminResponse: string;
 
   @CreateDateColumn()

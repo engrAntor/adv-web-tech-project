@@ -1,8 +1,8 @@
 // src/activity-logs/activity-logs.service.ts
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
-import { ActivityLog, ActivityAction } from './activity-log.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, Between, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
+import { ActivityLog, ActivityAction } from "./activity-log.entity";
 
 @Injectable()
 export class ActivityLogsService {
@@ -59,8 +59,8 @@ export class ActivityLogsService {
 
     const [logs, total] = await this.activityLogRepository.findAndCount({
       where,
-      relations: ['user'],
-      order: { createdAt: 'DESC' },
+      relations: ["user"],
+      order: { createdAt: "DESC" },
       take: limit,
       skip: offset,
     });
@@ -71,19 +71,17 @@ export class ActivityLogsService {
   async findByUser(userId: number, limit = 20): Promise<ActivityLog[]> {
     return this.activityLogRepository.find({
       where: { userId },
-      order: { createdAt: 'DESC' },
+      order: { createdAt: "DESC" },
       take: limit,
     });
   }
 
-  async exportLogs(
-    filters: {
-      userId?: number;
-      action?: ActivityAction;
-      startDate?: Date;
-      endDate?: Date;
-    },
-  ): Promise<ActivityLog[]> {
+  async exportLogs(filters: {
+    userId?: number;
+    action?: ActivityAction;
+    startDate?: Date;
+    endDate?: Date;
+  }): Promise<ActivityLog[]> {
     const where: any = {};
 
     if (filters.userId) where.userId = filters.userId;
@@ -95,8 +93,8 @@ export class ActivityLogsService {
 
     return this.activityLogRepository.find({
       where,
-      relations: ['user'],
-      order: { createdAt: 'DESC' },
+      relations: ["user"],
+      order: { createdAt: "DESC" },
     });
   }
 }

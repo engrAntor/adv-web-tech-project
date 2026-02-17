@@ -1,9 +1,9 @@
 // src/support/support.service.ts
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Ticket } from '../tickets/ticket.entity';
-import { Message } from './message.entity';
-import { Repository } from 'typeorm';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Ticket } from "../tickets/ticket.entity";
+import { Message } from "./message.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class SupportService {
@@ -22,7 +22,7 @@ export class SupportService {
   async addMessage(ticketId: number, content: string): Promise<Message> {
     const ticket = await this.ticketRepository.findOneBy({ id: ticketId }); // ✅ FIXED
     if (!ticket) {
-      throw new Error('Ticket not found');
+      throw new Error("Ticket not found");
     }
 
     const message = this.messageRepository.create({ content, ticket });

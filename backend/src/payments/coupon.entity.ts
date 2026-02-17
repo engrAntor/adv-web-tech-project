@@ -1,13 +1,20 @@
 // src/payments/coupon.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Course } from '../courses/courses.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { Course } from "../courses/courses.entity";
 
 export enum DiscountType {
-  PERCENTAGE = 'percentage',
-  FIXED = 'fixed',
+  PERCENTAGE = "percentage",
+  FIXED = "fixed",
 }
 
-@Entity('coupons')
+@Entity("coupons")
 export class Coupon {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,22 +26,22 @@ export class Coupon {
   description: string;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: DiscountType,
     default: DiscountType.PERCENTAGE,
   })
   discountType: DiscountType;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   discountValue: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
   minPurchaseAmount: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
   maxDiscountAmount: number;
 
-  @ManyToOne(() => Course, { nullable: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Course, { nullable: true, onDelete: "CASCADE" })
   course: Course;
 
   @Column({ nullable: true })

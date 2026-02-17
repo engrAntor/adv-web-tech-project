@@ -40,7 +40,7 @@ class RAGPipeline:
         if GEMINI_AVAILABLE and settings.GEMINI_API_KEY:
             try:
                 genai.configure(api_key=settings.GEMINI_API_KEY)
-                self.gemini_model = genai.GenerativeModel('gemini-pro')
+                self.gemini_model = genai.GenerativeModel('gemini-2.5-flash')
             except Exception as e:
                 print(f"Failed to initialize Gemini: {e}")
 

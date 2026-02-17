@@ -1,9 +1,17 @@
 // src/forums/forum.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Post } from '../posts/post.entity';
-import { Course } from '../courses/courses.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { Post } from "../posts/post.entity";
+import { Course } from "../courses/courses.entity";
 
-@Entity('forums')
+@Entity("forums")
 export class Forum {
   @PrimaryGeneratedColumn()
   id: number;
@@ -11,10 +19,10 @@ export class Forum {
   @Column()
   name: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: "text", nullable: true })
   description: string;
 
-  @ManyToOne(() => Course, { onDelete: 'CASCADE', nullable: true })
+  @ManyToOne(() => Course, { onDelete: "CASCADE", nullable: true })
   course: Course;
 
   @Column({ nullable: true })

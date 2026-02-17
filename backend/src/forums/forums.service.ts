@@ -1,12 +1,12 @@
 // src/forums/forums.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
-import { Forum } from './forum.entity';
-import { Post } from '../posts/post.entity';
-import { Comment } from '../comments/comment.entity';
-import { User } from '../users/users.entity';
-import { EmailService } from '../email/email.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, Like } from "typeorm";
+import { Forum } from "./forum.entity";
+import { Post } from "../posts/post.entity";
+import { Comment } from "../comments/comment.entity";
+import { User } from "../users/users.entity";
+import { EmailService } from "../email/email.service";
 
 @Injectable()
 export class ForumsService {
@@ -23,7 +23,11 @@ export class ForumsService {
   ) {}
 
   // Forum methods
-  async createForum(name: string, description?: string, courseId?: number): Promise<Forum> {
+  async createForum(
+    name: string,
+    description?: string,
+    courseId?: number,
+  ): Promise<Forum> {
     const forum = this.forumRepository.create({ name, description, courseId });
     return this.forumRepository.save(forum);
   }
@@ -31,21 +35,21 @@ export class ForumsService {
   async findAllForums(): Promise<Forum[]> {
     return this.forumRepository.find({
       where: { isActive: true },
-      order: { sortOrder: 'ASC', name: 'ASC' },
+      order: { sortOrder: "ASC", name: "ASC" },
     });
   }
 
   async findForumById(id: number): Promise<Forum | null> {
     return this.forumRepository.findOne({
       where: { id },
-      relations: ['course'],
+      relations: ["course"],
     });
   }
 
   async findForumsByCourse(courseId: number): Promise<Forum[]> {
     return this.forumRepository.find({
       where: { courseId, isActive: true },
-      order: { sortOrder: 'ASC' },
+      order: { sortOrder: "ASC" },
     });
   }
 
@@ -58,7 +62,7 @@ export class ForumsService {
     tags?: string[],
   ): Promise<Post> {
     const forum = await this.forumRepository.findOneBy({ id: forumId });
-    if (!forum) throw new NotFoundException('Forum not found');
+    if (!forum) throw new NotFoundException("Forum not found");
 
     const post = this.postRepository.create({
       forumId,
@@ -77,8 +81,8 @@ export class ForumsService {
   ): Promise<{ posts: Post[]; total: number }> {
     const [posts, total] = await this.postRepository.findAndCount({
       where: { forumId },
-      relations: ['author', 'comments'],
-      order: { isPinned: 'DESC', createdAt: 'DESC' },
+      relations: ["author", "comments"],
+      order: { isPinned: "DESC", createdAt: "DESC" },
       take: limit,
       skip: offset,
     });
@@ -89,11 +93,11 @@ export class ForumsService {
   async findPostById(id: number): Promise<Post | null> {
     const post = await this.postRepository.findOne({
       where: { id },
-      relations: ['author', 'forum', 'comments', 'comments.author'],
+      relations: ["author", "forum", "comments", "comments.author"],
     });
 
     if (post) {
-      await this.postRepository.increment({ id }, 'viewCount', 1);
+      await this.postRepository.increment({ id }, "viewCount", 1);
     }
 
     return post;
@@ -101,17 +105,18 @@ export class ForumsService {
 
   async searchPosts(query: string, limit = 20): Promise<Post[]> {
     return this.postRepository.find({
-      where: [
-        { title: Like(`%${query}%`) },
-        { content: Like(`%${query}%`) },
-      ],
-      relations: ['author', 'forum'],
-      order: { createdAt: 'DESC' },
+      where: [{ title: Like(`%${query}%`) }, { content: Like(`%${query}%`) }],
+      relations: ["author", "forum"],
+      order: { createdAt: "DESC" },
       take: limit,
     });
   }
 
-  async updatePost(id: number, authorId: number, data: Partial<Post>): Promise<Post | null> {
+  async updatePost(
+    id: number,
+    authorId: number,
+    data: Partial<Post>,
+  ): Promise<Post | null> {
     const post = await this.postRepository.findOneBy({ id, authorId });
     if (!post) return null;
 
@@ -119,7 +124,11 @@ export class ForumsService {
     return this.postRepository.findOneBy({ id });
   }
 
-  async deletePost(id: number, authorId: number, isAdmin = false): Promise<void> {
+  async deletePost(
+    id: number,
+    authorId: number,
+    isAdmin = false,
+  ): Promise<void> {
     const where: any = { id };
     if (!isAdmin) where.authorId = authorId;
 
@@ -136,19 +145,26 @@ export class ForumsService {
 
   async markBestAnswer(postId: number, commentId: number): Promise<void> {
     // First, unmark any existing best answer
-    await this.commentRepository.update({ postId, isBestAnswer: true }, { isBestAnswer: false });
+    await this.commentRepository.update(
+      { postId, isBestAnswer: true },
+      { isBestAnswer: false },
+    );
     // Then mark the new best answer
     await this.commentRepository.update(commentId, { isBestAnswer: true });
     await this.postRepository.update(postId, { isBestAnswer: true });
   }
 
   // Comment methods
-  async createComment(postId: number, authorId: number, content: string): Promise<Comment> {
+  async createComment(
+    postId: number,
+    authorId: number,
+    content: string,
+  ): Promise<Comment> {
     const post = await this.postRepository.findOne({
       where: { id: postId },
-      relations: ['author'],
+      relations: ["author"],
     });
-    if (!post) throw new NotFoundException('Post not found');
+    if (!post) throw new NotFoundException("Post not found");
 
     const comment = this.commentRepository.create({
       postId,
@@ -161,16 +177,20 @@ export class ForumsService {
     if (post.authorId !== authorId && post.author?.email) {
       const commenter = await this.userRepository.findOneBy({ id: authorId });
       const commenterName = commenter?.firstName
-        ? `${commenter.firstName} ${commenter.lastName || ''}`.trim()
-        : commenter?.email || 'Someone';
+        ? `${commenter.firstName} ${commenter.lastName || ""}`.trim()
+        : commenter?.email || "Someone";
 
       // Send email notification asynchronously (don't wait for it)
-      this.emailService.sendForumReplyNotification(
-        post.author.email,
-        commenterName,
-        post.title,
-        content,
-      ).catch(err => console.error('Failed to send forum reply notification:', err));
+      this.emailService
+        .sendForumReplyNotification(
+          post.author.email,
+          commenterName,
+          post.title,
+          content,
+        )
+        .catch((err) =>
+          console.error("Failed to send forum reply notification:", err),
+        );
     }
 
     return savedComment;
@@ -179,17 +199,25 @@ export class ForumsService {
   async findCommentsByPost(postId: number): Promise<Comment[]> {
     return this.commentRepository.find({
       where: { postId },
-      relations: ['author'],
-      order: { isBestAnswer: 'DESC', createdAt: 'ASC' },
+      relations: ["author"],
+      order: { isBestAnswer: "DESC", createdAt: "ASC" },
     });
   }
 
-  async updateComment(id: number, authorId: number, content: string): Promise<Comment | null> {
+  async updateComment(
+    id: number,
+    authorId: number,
+    content: string,
+  ): Promise<Comment | null> {
     await this.commentRepository.update({ id, authorId }, { content });
     return this.commentRepository.findOneBy({ id });
   }
 
-  async deleteComment(id: number, authorId: number, isAdmin = false): Promise<void> {
+  async deleteComment(
+    id: number,
+    authorId: number,
+    isAdmin = false,
+  ): Promise<void> {
     const where: any = { id };
     if (!isAdmin) where.authorId = authorId;
 
@@ -197,7 +225,7 @@ export class ForumsService {
   }
 
   async upvoteComment(id: number): Promise<Comment | null> {
-    await this.commentRepository.increment({ id }, 'upvotes', 1);
+    await this.commentRepository.increment({ id }, "upvotes", 1);
     return this.commentRepository.findOneBy({ id });
   }
 }

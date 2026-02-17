@@ -1,9 +1,15 @@
 // src/certificates/certificate.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
-import { User } from '../users/users.entity';
-import { Course } from '../courses/courses.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from "typeorm";
+import { User } from "../users/users.entity";
+import { Course } from "../courses/courses.entity";
 
-@Entity('certificates')
+@Entity("certificates")
 export class Certificate {
   @PrimaryGeneratedColumn()
   id: number;
@@ -11,13 +17,15 @@ export class Certificate {
   @Column({ unique: true })
   certificateCode: string;
 
-  @ManyToOne(() => User, (user) => user.certificates, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.certificates, { onDelete: "CASCADE" })
   user: User;
 
   @Column()
   userId: number;
 
-  @ManyToOne(() => Course, (course) => course.certificates, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Course, (course) => course.certificates, {
+    onDelete: "CASCADE",
+  })
   course: Course;
 
   @Column()

@@ -1,9 +1,17 @@
 // src/quizzes/quiz.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Question } from '../question/question.entity';
-import { Course } from '../courses/courses.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { Question } from "../question/question.entity";
+import { Course } from "../courses/courses.entity";
 
-@Entity('quizzes')
+@Entity("quizzes")
 export class Quiz {
   @PrimaryGeneratedColumn()
   id: number;
@@ -11,10 +19,10 @@ export class Quiz {
   @Column()
   title: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: "text", nullable: true })
   description: string;
 
-  @ManyToOne(() => Course, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Course, { onDelete: "CASCADE" })
   course: Course;
 
   @Column()

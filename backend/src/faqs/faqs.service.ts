@@ -1,8 +1,8 @@
 // src/faqs/faqs.service.ts
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
-import { FAQ, FAQCategory } from './faq.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, Like } from "typeorm";
+import { FAQ, FAQCategory } from "./faq.entity";
 
 @Injectable()
 export class FaqsService {
@@ -11,7 +11,12 @@ export class FaqsService {
     private faqRepository: Repository<FAQ>,
   ) {}
 
-  async create(question: string, answer: string, category: FAQCategory, sortOrder = 0): Promise<FAQ> {
+  async create(
+    question: string,
+    answer: string,
+    category: FAQCategory,
+    sortOrder = 0,
+  ): Promise<FAQ> {
     const faq = this.faqRepository.create({
       question,
       answer,
@@ -27,14 +32,14 @@ export class FaqsService {
 
     return this.faqRepository.find({
       where,
-      order: { category: 'ASC', sortOrder: 'ASC' },
+      order: { category: "ASC", sortOrder: "ASC" },
     });
   }
 
   async findByCategory(category: FAQCategory): Promise<FAQ[]> {
     return this.faqRepository.find({
       where: { category, isPublished: true },
-      order: { sortOrder: 'ASC' },
+      order: { sortOrder: "ASC" },
     });
   }
 
@@ -44,7 +49,7 @@ export class FaqsService {
         { question: Like(`%${query}%`), isPublished: true },
         { answer: Like(`%${query}%`), isPublished: true },
       ],
-      order: { sortOrder: 'ASC' },
+      order: { sortOrder: "ASC" },
     });
   }
 

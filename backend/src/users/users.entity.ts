@@ -1,17 +1,24 @@
 // src/users/user.entity.ts
 
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Progress } from '../progress/progress.entity';
-import { Certificate } from '../certificates/certificate.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { Progress } from "../progress/progress.entity";
+import { Certificate } from "../certificates/certificate.entity";
 
 export enum UserRole {
-  USER = 'user',
-  INSTRUCTOR = 'instructor',
-  ADVISOR = 'advisor',
-  ADMIN = 'admin',
+  USER = "user",
+  INSTRUCTOR = "instructor",
+  ADVISOR = "advisor",
+  ADMIN = "admin",
 }
 
-@Entity('users')
+@Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -38,7 +45,7 @@ export class User {
   phone: string;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: UserRole,
     default: UserRole.USER,
   })
@@ -47,22 +54,22 @@ export class User {
   @Column({ default: false })
   isEmailVerified: boolean;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: "varchar", nullable: true })
   emailVerificationToken: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: "varchar", nullable: true })
   emailVerificationOTP: string;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: "timestamp", nullable: true })
   emailVerificationExpires: Date;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: "varchar", nullable: true })
   passwordResetToken: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: "varchar", nullable: true })
   passwordResetOTP: string;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: "timestamp", nullable: true })
   passwordResetExpires: Date;
 
   @Column({ default: true })

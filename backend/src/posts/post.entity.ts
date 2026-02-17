@@ -1,10 +1,18 @@
 // src/posts/post.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Forum } from '../forums/forum.entity';
-import { Comment } from '../comments/comment.entity';
-import { User } from '../users/users.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { Forum } from "../forums/forum.entity";
+import { Comment } from "../comments/comment.entity";
+import { User } from "../users/users.entity";
 
-@Entity('posts')
+@Entity("posts")
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
@@ -12,16 +20,16 @@ export class Post {
   @Column()
   title: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   content: string;
 
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: "CASCADE" })
   author: User;
 
   @Column()
   authorId: number;
 
-  @ManyToOne(() => Forum, (forum) => forum.posts, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Forum, (forum) => forum.posts, { onDelete: "CASCADE" })
   forum: Forum;
 
   @Column()
@@ -39,7 +47,7 @@ export class Post {
   @Column({ default: 0 })
   viewCount: number;
 
-  @Column({ type: 'simple-array', nullable: true })
+  @Column({ type: "simple-array", nullable: true })
   tags: string[];
 
   @CreateDateColumn()

@@ -1,9 +1,9 @@
 // src/contact/contact.service.ts
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Contact, ContactStatus } from './contact.entity';
-import { EmailService } from '../email/email.service';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Contact, ContactStatus } from "./contact.entity";
+import { EmailService } from "../email/email.service";
 
 @Injectable()
 export class ContactService {
@@ -30,7 +30,12 @@ export class ContactService {
     const savedContact = await this.contactRepository.save(contact);
 
     // Send email notification to admin
-    await this.emailService.sendContactNotification(name, email, subject, message);
+    await this.emailService.sendContactNotification(
+      name,
+      email,
+      subject,
+      message,
+    );
 
     // Send auto-receipt email to user
     await this.emailService.sendContactReceipt(name, email, subject);
@@ -48,8 +53,8 @@ export class ContactService {
 
     const [contacts, total] = await this.contactRepository.findAndCount({
       where,
-      relations: ['user'],
-      order: { createdAt: 'DESC' },
+      relations: ["user"],
+      order: { createdAt: "DESC" },
       take: limit,
       skip: offset,
     });
@@ -60,11 +65,15 @@ export class ContactService {
   async findOne(id: number): Promise<Contact | null> {
     return this.contactRepository.findOne({
       where: { id },
-      relations: ['user'],
+      relations: ["user"],
     });
   }
 
-  async updateStatus(id: number, status: ContactStatus, adminResponse?: string): Promise<Contact | null> {
+  async updateStatus(
+    id: number,
+    status: ContactStatus,
+    adminResponse?: string,
+  ): Promise<Contact | null> {
     await this.contactRepository.update(id, { status, adminResponse });
     return this.findOne(id);
   }

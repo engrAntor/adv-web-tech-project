@@ -1,9 +1,9 @@
 // src/ratings/ratings.service.ts
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Rating } from './rating.entity';
-import { Course } from '../courses/courses.entity';
+import { Injectable, BadRequestException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Rating } from "./rating.entity";
+import { Course } from "../courses/courses.entity";
 
 @Injectable()
 export class RatingsService {
@@ -14,9 +14,14 @@ export class RatingsService {
     private courseRepository: Repository<Course>,
   ) {}
 
-  async create(userId: number, courseId: number, rating: number, review?: string): Promise<Rating> {
+  async create(
+    userId: number,
+    courseId: number,
+    rating: number,
+    review?: string,
+  ): Promise<Rating> {
     if (rating < 1 || rating > 5) {
-      throw new BadRequestException('Rating must be between 1 and 5');
+      throw new BadRequestException("Rating must be between 1 and 5");
     }
 
     const existing = await this.ratingRepository.findOne({
@@ -46,11 +51,11 @@ export class RatingsService {
 
   private async updateCourseRating(courseId: number): Promise<void> {
     const result = await this.ratingRepository
-      .createQueryBuilder('rating')
-      .select('AVG(rating.rating)', 'avg')
-      .addSelect('COUNT(*)', 'count')
-      .where('rating.courseId = :courseId', { courseId })
-      .andWhere('rating.isApproved = true')
+      .createQueryBuilder("rating")
+      .select("AVG(rating.rating)", "avg")
+      .addSelect("COUNT(*)", "count")
+      .where("rating.courseId = :courseId", { courseId })
+      .andWhere("rating.isApproved = true")
       .getRawOne();
 
     await this.courseRepository.update(courseId, {
@@ -59,11 +64,15 @@ export class RatingsService {
     });
   }
 
-  async findByCourse(courseId: number, limit = 10, offset = 0): Promise<{ ratings: Rating[]; total: number }> {
+  async findByCourse(
+    courseId: number,
+    limit = 10,
+    offset = 0,
+  ): Promise<{ ratings: Rating[]; total: number }> {
     const [ratings, total] = await this.ratingRepository.findAndCount({
       where: { courseId, isApproved: true },
-      relations: ['user'],
-      order: { createdAt: 'DESC' },
+      relations: ["user"],
+      order: { createdAt: "DESC" },
       take: limit,
       skip: offset,
     });
@@ -74,12 +83,15 @@ export class RatingsService {
   async findByUser(userId: number): Promise<Rating[]> {
     return this.ratingRepository.find({
       where: { userId },
-      relations: ['course'],
-      order: { createdAt: 'DESC' },
+      relations: ["course"],
+      order: { createdAt: "DESC" },
     });
   }
 
-  async getUserCourseRating(userId: number, courseId: number): Promise<Rating | null> {
+  async getUserCourseRating(
+    userId: number,
+    courseId: number,
+  ): Promise<Rating | null> {
     return this.ratingRepository.findOne({
       where: { userId, courseId },
     });

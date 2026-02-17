@@ -1,15 +1,21 @@
 // src/faqs/faq.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 export enum FAQCategory {
-  ENROLLMENT = 'Enrollment',
-  TECHNICAL = 'Technical',
-  PAYMENTS = 'Payments',
-  CERTIFICATES = 'Certificates',
-  GENERAL = 'General',
+  ENROLLMENT = "Enrollment",
+  TECHNICAL = "Technical",
+  PAYMENTS = "Payments",
+  CERTIFICATES = "Certificates",
+  GENERAL = "General",
 }
 
-@Entity('faqs')
+@Entity("faqs")
 export class FAQ {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,11 +23,11 @@ export class FAQ {
   @Column()
   question: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   answer: string;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: FAQCategory,
     default: FAQCategory.GENERAL,
   })

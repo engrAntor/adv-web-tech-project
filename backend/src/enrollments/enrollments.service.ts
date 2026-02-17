@@ -1,10 +1,14 @@
 // src/enrollments/enrollments.service.ts
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Enrollment, PaymentStatus } from './enrollment.entity';
-import { Course } from '../courses/courses.entity';
-import { Progress, ProgressStatus } from '../progress/progress.entity';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Enrollment, PaymentStatus } from "./enrollment.entity";
+import { Course } from "../courses/courses.entity";
+import { Progress, ProgressStatus } from "../progress/progress.entity";
 
 @Injectable()
 export class EnrollmentsService {
@@ -30,12 +34,12 @@ export class EnrollmentsService {
     });
 
     if (existing) {
-      throw new BadRequestException('Already enrolled in this course');
+      throw new BadRequestException("Already enrolled in this course");
     }
 
     const course = await this.courseRepository.findOneBy({ id: courseId });
     if (!course) {
-      throw new NotFoundException('Course not found');
+      throw new NotFoundException("Course not found");
     }
 
     const enrollment = this.enrollmentRepository.create({
@@ -59,7 +63,11 @@ export class EnrollmentsService {
     await this.progressRepository.save(progress);
 
     // Update course enrollment count
-    await this.courseRepository.increment({ id: courseId }, 'enrollmentCount', 1);
+    await this.courseRepository.increment(
+      { id: courseId },
+      "enrollmentCount",
+      1,
+    );
 
     return enrollment;
   }
@@ -67,16 +75,20 @@ export class EnrollmentsService {
   async findByUser(userId: number): Promise<Enrollment[]> {
     return this.enrollmentRepository.find({
       where: { userId },
-      relations: ['course'],
-      order: { enrolledAt: 'DESC' },
+      relations: ["course"],
+      order: { enrolledAt: "DESC" },
     });
   }
 
-  async findByCourse(courseId: number, limit = 20, offset = 0): Promise<{ enrollments: Enrollment[]; total: number }> {
+  async findByCourse(
+    courseId: number,
+    limit = 20,
+    offset = 0,
+  ): Promise<{ enrollments: Enrollment[]; total: number }> {
     const [enrollments, total] = await this.enrollmentRepository.findAndCount({
       where: { courseId },
-      relations: ['user'],
-      order: { enrolledAt: 'DESC' },
+      relations: ["user"],
+      order: { enrolledAt: "DESC" },
       take: limit,
       skip: offset,
     });
@@ -94,7 +106,7 @@ export class EnrollmentsService {
   async findOne(id: number): Promise<Enrollment | null> {
     return this.enrollmentRepository.findOne({
       where: { id },
-      relations: ['user', 'course'],
+      relations: ["user", "course"],
     });
   }
 }

@@ -1,7 +1,7 @@
 // src/payments/dto/payments.dto.ts
-import { IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
-import { PaymentMethod, Currency } from '../payment.entity';
-import { DiscountType } from '../coupon.entity';
+import { IsEnum, IsNumber, IsOptional, IsString, Min } from "class-validator";
+import { PaymentMethod, Currency } from "../payment.entity";
+import { DiscountType } from "../coupon.entity";
 
 export class InitiatePaymentDto {
   @IsNumber()

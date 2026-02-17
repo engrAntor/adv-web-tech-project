@@ -1,27 +1,32 @@
 // src/seeds/seed-paid-courses.ts
-import { DataSource } from 'typeorm';
-import { Course, CourseCategory, CourseDifficulty } from '../courses/courses.entity';
-import { User, UserRole } from '../users/users.entity';
-import { Progress } from '../progress/progress.entity';
-import { Certificate } from '../certificates/certificate.entity';
-import { Enrollment } from '../enrollments/enrollment.entity';
-import { Notification } from '../notifications/notification.entity';
+import { DataSource } from "typeorm";
+import {
+  Course,
+  CourseCategory,
+  CourseDifficulty,
+} from "../courses/courses.entity";
+import { User, UserRole } from "../users/users.entity";
+import { Progress } from "../progress/progress.entity";
+import { Certificate } from "../certificates/certificate.entity";
+import { Enrollment } from "../enrollments/enrollment.entity";
+import { Notification } from "../notifications/notification.entity";
 
 const dataSource = new DataSource({
-  type: 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432'),
-  username: process.env.DB_USERNAME || 'postgres',
-  password: process.env.DB_PASSWORD || '123456',
-  database: process.env.DB_NAME || 'adv_web_tech_db',
+  type: "postgres",
+  host: process.env.DB_HOST || "localhost",
+  port: parseInt(process.env.DB_PORT || "5432"),
+  username: process.env.DB_USERNAME || "postgres",
+  password: process.env.DB_PASSWORD || "123456",
+  database: process.env.DB_NAME || "adv_web_tech_db",
   entities: [Course, User, Progress, Certificate, Enrollment, Notification],
   synchronize: false,
 });
 
 const paidCourses = [
   {
-    title: 'Complete React & Next.js Developer Course',
-    description: 'Master React 18, Next.js 14, TypeScript, Redux Toolkit, and build production-ready applications. This comprehensive course covers everything from fundamentals to advanced patterns including Server Components, App Router, and deployment strategies.',
+    title: "Complete React & Next.js Developer Course",
+    description:
+      "Master React 18, Next.js 14, TypeScript, Redux Toolkit, and build production-ready applications. This comprehensive course covers everything from fundamentals to advanced patterns including Server Components, App Router, and deployment strategies.",
     syllabus: `Week 1: React Fundamentals
 - JSX and Components
 - Props and State
@@ -58,8 +63,9 @@ Week 6: Production & Deployment
     isFree: false,
   },
   {
-    title: 'Machine Learning A-Z: From Zero to Hero',
-    description: 'Learn Machine Learning from scratch! This course covers supervised learning, unsupervised learning, deep learning with TensorFlow and PyTorch. Build real-world ML projects including image classification, NLP, and recommendation systems.',
+    title: "Machine Learning A-Z: From Zero to Hero",
+    description:
+      "Learn Machine Learning from scratch! This course covers supervised learning, unsupervised learning, deep learning with TensorFlow and PyTorch. Build real-world ML projects including image classification, NLP, and recommendation systems.",
     syllabus: `Module 1: Python for ML
 - NumPy & Pandas
 - Data Visualization
@@ -91,8 +97,9 @@ Module 5: Advanced Topics
     isFree: false,
   },
   {
-    title: 'AWS Solutions Architect Professional',
-    description: 'Prepare for the AWS Solutions Architect Professional certification. Master advanced AWS services, design patterns, cost optimization, and enterprise architecture. Includes hands-on labs and practice exams.',
+    title: "AWS Solutions Architect Professional",
+    description:
+      "Prepare for the AWS Solutions Architect Professional certification. Master advanced AWS services, design patterns, cost optimization, and enterprise architecture. Includes hands-on labs and practice exams.",
     syllabus: `Section 1: Advanced Networking
 - VPC Design Patterns
 - Transit Gateway
@@ -124,8 +131,9 @@ Section 5: Architecture Patterns
     isFree: false,
   },
   {
-    title: 'Full-Stack Mobile Development with React Native',
-    description: 'Build cross-platform mobile apps for iOS and Android using React Native and Expo. Learn navigation, state management, native modules, and publish your apps to the App Store and Google Play.',
+    title: "Full-Stack Mobile Development with React Native",
+    description:
+      "Build cross-platform mobile apps for iOS and Android using React Native and Expo. Learn navigation, state management, native modules, and publish your apps to the App Store and Google Play.",
     syllabus: `Part 1: React Native Basics
 - Expo Setup
 - Core Components
@@ -157,8 +165,9 @@ Part 5: Publishing
     isFree: false,
   },
   {
-    title: 'DevOps Engineering: CI/CD, Docker & Kubernetes',
-    description: 'Master DevOps practices with hands-on experience in Docker, Kubernetes, Jenkins, GitHub Actions, and Terraform. Build automated pipelines and deploy microservices at scale.',
+    title: "DevOps Engineering: CI/CD, Docker & Kubernetes",
+    description:
+      "Master DevOps practices with hands-on experience in Docker, Kubernetes, Jenkins, GitHub Actions, and Terraform. Build automated pipelines and deploy microservices at scale.",
     syllabus: `Chapter 1: Docker Fundamentals
 - Containerization
 - Dockerfile Best Practices
@@ -190,8 +199,9 @@ Chapter 5: Monitoring & Logging
     isFree: false,
   },
   {
-    title: 'Ethical Hacking & Penetration Testing',
-    description: 'Learn ethical hacking from scratch. Master reconnaissance, vulnerability assessment, exploitation, and post-exploitation techniques. Prepare for CEH and OSCP certifications.',
+    title: "Ethical Hacking & Penetration Testing",
+    description:
+      "Learn ethical hacking from scratch. Master reconnaissance, vulnerability assessment, exploitation, and post-exploitation techniques. Prepare for CEH and OSCP certifications.",
     syllabus: `Module 1: Reconnaissance
 - OSINT Techniques
 - Network Scanning
@@ -223,8 +233,9 @@ Module 5: Reporting
     isFree: false,
   },
   {
-    title: 'Python Programming Masterclass',
-    description: 'Complete Python course from basics to advanced. Learn OOP, file handling, web scraping, automation, and build real projects. Perfect for beginners wanting to master Python.',
+    title: "Python Programming Masterclass",
+    description:
+      "Complete Python course from basics to advanced. Learn OOP, file handling, web scraping, automation, and build real projects. Perfect for beginners wanting to master Python.",
     syllabus: `Week 1-2: Python Basics
 - Variables & Data Types
 - Control Flow
@@ -256,8 +267,9 @@ Week 9-10: Projects
     isFree: false,
   },
   {
-    title: 'UI/UX Design with Figma',
-    description: 'Master UI/UX design principles and Figma. Create wireframes, prototypes, and design systems. Learn user research, accessibility, and design handoff to developers.',
+    title: "UI/UX Design with Figma",
+    description:
+      "Master UI/UX design principles and Figma. Create wireframes, prototypes, and design systems. Learn user research, accessibility, and design handoff to developers.",
     syllabus: `Section 1: Design Fundamentals
 - Design Principles
 - Color Theory
@@ -293,7 +305,7 @@ Section 5: Prototyping
 async function seedPaidCourses() {
   try {
     await dataSource.initialize();
-    console.log('Database connected');
+    console.log("Database connected");
 
     const courseRepo = dataSource.getRepository(Course);
     const userRepo = dataSource.getRepository(User);
@@ -301,11 +313,11 @@ async function seedPaidCourses() {
     // Find an instructor (admin or first user)
     const instructor = await userRepo.findOne({
       where: [{ role: UserRole.ADMIN }, { role: UserRole.INSTRUCTOR }],
-      order: { id: 'ASC' },
+      order: { id: "ASC" },
     });
 
     if (!instructor) {
-      console.log('No instructor found. Creating courses without instructor.');
+      console.log("No instructor found. Creating courses without instructor.");
     }
 
     for (const courseData of paidCourses) {
@@ -326,13 +338,15 @@ async function seedPaidCourses() {
       });
 
       await courseRepo.save(course);
-      console.log(`Created course: "${courseData.title}" - $${courseData.price}`);
+      console.log(
+        `Created course: "${courseData.title}" - $${courseData.price}`,
+      );
     }
 
-    console.log('\nPaid courses seeded successfully!');
+    console.log("\nPaid courses seeded successfully!");
     await dataSource.destroy();
   } catch (error) {
-    console.error('Error seeding paid courses:', error);
+    console.error("Error seeding paid courses:", error);
     process.exit(1);
   }
 }

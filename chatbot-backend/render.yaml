@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: lms-chatbot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn chatbot_project.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        sync: false

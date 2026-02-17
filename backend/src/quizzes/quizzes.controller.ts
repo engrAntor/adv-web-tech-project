@@ -1,11 +1,22 @@
 // src/quizzes/quizzes.controller.ts
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query, Request, UseGuards } from '@nestjs/common';
-import { QuizzesService } from './quizzes.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RolesGuard, Roles } from '../auth/roles.guard';
-import { UserRole } from '../users/users.entity';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Query,
+  Request,
+  UseGuards,
+} from "@nestjs/common";
+import { QuizzesService } from "./quizzes.service";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { RolesGuard, Roles } from "../auth/roles.guard";
+import { UserRole } from "../users/users.entity";
 
-@Controller('quizzes')
+@Controller("quizzes")
 export class QuizzesController {
   constructor(private readonly quizzesService: QuizzesService) {}
 
@@ -14,34 +25,34 @@ export class QuizzesController {
     return this.quizzesService.findAllQuizzes();
   }
 
-  @Get('instructor')
+  @Get("instructor")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.INSTRUCTOR)
   async findByInstructor(@Request() req: any) {
     return this.quizzesService.findAllQuizzesForInstructor(req.user.id);
   }
 
-  @Get('admin/all')
+  @Get("admin/all")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.ADVISOR)
   async findAllAdmin() {
     return this.quizzesService.findAllQuizzesAdmin();
   }
 
-  @Get('course/:courseId')
-  async findByCourse(@Param('courseId') courseId: number) {
+  @Get("course/:courseId")
+  async findByCourse(@Param("courseId") courseId: number) {
     return this.quizzesService.findQuizzesByCourse(+courseId);
   }
 
-  @Get(':id')
-  async findById(@Param('id') id: number) {
+  @Get(":id")
+  async findById(@Param("id") id: number) {
     return this.quizzesService.findQuizById(+id);
   }
 
-  @Get(':id/stats')
+  @Get(":id/stats")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
-  async getStats(@Param('id') id: number) {
+  async getStats(@Param("id") id: number) {
     return this.quizzesService.getQuizStats(+id);
   }
 
@@ -49,7 +60,8 @@ export class QuizzesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   async create(
-    @Body() body: {
+    @Body()
+    body: {
       courseId: number;
       title: string;
       description?: string;
@@ -66,28 +78,39 @@ export class QuizzesController {
     );
   }
 
-  @Patch(':id')
+  @Patch(":id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
-  async update(@Param('id') id: number, @Body() body: Partial<{ title: string; description: string; timeLimit: number; passingScore: number; isPublished: boolean }>) {
+  async update(
+    @Param("id") id: number,
+    @Body()
+    body: Partial<{
+      title: string;
+      description: string;
+      timeLimit: number;
+      passingScore: number;
+      isPublished: boolean;
+    }>,
+  ) {
     return this.quizzesService.updateQuiz(+id, body);
   }
 
-  @Delete(':id')
+  @Delete(":id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
-  async delete(@Param('id') id: number) {
+  async delete(@Param("id") id: number) {
     await this.quizzesService.deleteQuiz(+id);
     return { success: true };
   }
 
   // Question endpoints
-  @Post(':quizId/questions')
+  @Post(":quizId/questions")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   async addQuestion(
-    @Param('quizId') quizId: number,
-    @Body() body: {
+    @Param("quizId") quizId: number,
+    @Body()
+    body: {
       content: string;
       options: string[];
       correctAnswer: number;
@@ -105,12 +128,13 @@ export class QuizzesController {
     );
   }
 
-  @Patch('questions/:id')
+  @Patch("questions/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   async updateQuestion(
-    @Param('id') id: number,
-    @Body() body: Partial<{
+    @Param("id") id: number,
+    @Body()
+    body: Partial<{
       content: string;
       options: string[];
       correctAnswer: number;
@@ -121,40 +145,50 @@ export class QuizzesController {
     return this.quizzesService.updateQuestion(+id, body);
   }
 
-  @Delete('questions/:id')
+  @Delete("questions/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
-  async deleteQuestion(@Param('id') id: number) {
+  async deleteQuestion(@Param("id") id: number) {
     await this.quizzesService.deleteQuestion(+id);
     return { success: true };
   }
 
   // Attempt endpoints
-  @Post(':quizId/start')
+  @Post(":quizId/start")
   @UseGuards(JwtAuthGuard)
-  async startAttempt(@Param('quizId') quizId: number, @Request() req: any) {
+  async startAttempt(@Param("quizId") quizId: number, @Request() req: any) {
     return this.quizzesService.startAttempt(req.user.id, +quizId);
   }
 
-  @Post('attempts/:attemptId/submit')
+  @Post("attempts/:attemptId/submit")
   @UseGuards(JwtAuthGuard)
   async submitAttempt(
-    @Param('attemptId') attemptId: number,
+    @Param("attemptId") attemptId: number,
     @Request() req: any,
     @Body() body: { answers: { questionId: number; selectedAnswer: number }[] },
   ) {
-    return this.quizzesService.submitAttempt(+attemptId, req.user.id, body.answers);
+    return this.quizzesService.submitAttempt(
+      +attemptId,
+      req.user.id,
+      body.answers,
+    );
   }
 
-  @Get('attempts/:attemptId')
+  @Get("attempts/:attemptId")
   @UseGuards(JwtAuthGuard)
-  async getAttemptResult(@Param('attemptId') attemptId: number, @Request() req: any) {
+  async getAttemptResult(
+    @Param("attemptId") attemptId: number,
+    @Request() req: any,
+  ) {
     return this.quizzesService.getAttemptResult(+attemptId, req.user.id);
   }
 
-  @Get('my-attempts')
+  @Get("my-attempts")
   @UseGuards(JwtAuthGuard)
-  async getMyAttempts(@Request() req: any, @Query('quizId') quizId?: number) {
-    return this.quizzesService.getUserAttempts(req.user.id, quizId ? +quizId : undefined);
+  async getMyAttempts(@Request() req: any, @Query("quizId") quizId?: number) {
+    return this.quizzesService.getUserAttempts(
+      req.user.id,
+      quizId ? +quizId : undefined,
+    );
   }
 }

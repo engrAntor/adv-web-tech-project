@@ -1,6 +1,6 @@
 // src/tickets/ticket.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Message } from '../support/message.entity';  // Correct path
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Message } from "../support/message.entity"; // Correct path
 
 @Entity()
 export class Ticket {

@@ -1,9 +1,13 @@
 // src/users/users.service.ts
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User, UserRole } from './users.entity';
-import * as bcrypt from 'bcrypt';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User, UserRole } from "./users.entity";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UsersService {
@@ -23,7 +27,7 @@ export class UsersService {
   async createUser(email: string, password: string): Promise<User> {
     const existing = await this.findByEmail(email);
     if (existing) {
-      throw new BadRequestException('Email already exists');
+      throw new BadRequestException("Email already exists");
     }
 
     const user = this.userRepository.create({ email, password });
@@ -42,22 +46,26 @@ export class UsersService {
   ): Promise<User> {
     const user = await this.findById(id);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     await this.userRepository.update(id, data);
     return this.userRepository.findOneBy({ id }) as Promise<User>;
   }
 
-  async updatePassword(id: number, currentPassword: string, newPassword: string): Promise<void> {
+  async updatePassword(
+    id: number,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
     const user = await this.findById(id);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
-      throw new BadRequestException('Current password is incorrect');
+      throw new BadRequestException("Current password is incorrect");
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -75,10 +83,12 @@ export class UsersService {
   }
 
   // Password Reset OTP Methods
-  async setPasswordResetOTP(email: string): Promise<{ otp: string; user: User }> {
+  async setPasswordResetOTP(
+    email: string,
+  ): Promise<{ otp: string; user: User }> {
     const user = await this.findByEmail(email);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     const otp = this.generateOTP();
@@ -95,19 +105,20 @@ export class UsersService {
   async verifyPasswordResetOTP(email: string, otp: string): Promise<string> {
     const user = await this.findByEmail(email);
     if (!user) {
-      throw new BadRequestException('Invalid email');
+      throw new BadRequestException("Invalid email");
     }
 
     if (!user.passwordResetOTP || user.passwordResetOTP !== otp) {
-      throw new BadRequestException('Invalid OTP');
+      throw new BadRequestException("Invalid OTP");
     }
 
     if (!user.passwordResetExpires || user.passwordResetExpires < new Date()) {
-      throw new BadRequestException('OTP has expired');
+      throw new BadRequestException("OTP has expired");
     }
 
     // Generate a reset token for the actual password reset
-    const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    const token =
+      Math.random().toString(36).substring(2) + Date.now().toString(36);
     await this.userRepository.update(user.id, {
       passwordResetToken: token,
       passwordResetOTP: null as any,
@@ -116,13 +127,20 @@ export class UsersService {
     return token;
   }
 
-  async resetPasswordWithToken(token: string, newPassword: string): Promise<void> {
+  async resetPasswordWithToken(
+    token: string,
+    newPassword: string,
+  ): Promise<void> {
     const user = await this.userRepository.findOne({
       where: { passwordResetToken: token },
     });
 
-    if (!user || !user.passwordResetExpires || user.passwordResetExpires < new Date()) {
-      throw new BadRequestException('Invalid or expired reset token');
+    if (
+      !user ||
+      !user.passwordResetExpires ||
+      user.passwordResetExpires < new Date()
+    ) {
+      throw new BadRequestException("Invalid or expired reset token");
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -160,15 +178,18 @@ export class UsersService {
   async verifyEmailWithOTP(email: string, otp: string): Promise<void> {
     const user = await this.findByEmail(email);
     if (!user) {
-      throw new BadRequestException('Invalid email');
+      throw new BadRequestException("Invalid email");
     }
 
     if (!user.emailVerificationOTP || user.emailVerificationOTP !== otp) {
-      throw new BadRequestException('Invalid OTP');
+      throw new BadRequestException("Invalid OTP");
     }
 
-    if (!user.emailVerificationExpires || user.emailVerificationExpires < new Date()) {
-      throw new BadRequestException('OTP has expired');
+    if (
+      !user.emailVerificationExpires ||
+      user.emailVerificationExpires < new Date()
+    ) {
+      throw new BadRequestException("OTP has expired");
     }
 
     await this.userRepository.update(user.id, {
@@ -179,14 +200,16 @@ export class UsersService {
     });
   }
 
-  async resendEmailVerificationOTP(email: string): Promise<{ otp: string; user: User }> {
+  async resendEmailVerificationOTP(
+    email: string,
+  ): Promise<{ otp: string; user: User }> {
     const user = await this.findByEmail(email);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     if (user.isEmailVerified) {
-      throw new BadRequestException('Email is already verified');
+      throw new BadRequestException("Email is already verified");
     }
 
     const otp = await this.setEmailVerificationOTP(user.id);
@@ -204,7 +227,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new BadRequestException('Invalid verification token');
+      throw new BadRequestException("Invalid verification token");
     }
 
     await this.userRepository.update(user.id, {
@@ -226,21 +249,21 @@ export class UsersService {
     search?: string,
     role?: UserRole,
   ): Promise<{ users: User[]; total: number }> {
-    const query = this.userRepository.createQueryBuilder('user');
+    const query = this.userRepository.createQueryBuilder("user");
 
     if (search) {
       query.where(
-        'user.email LIKE :search OR user.firstName LIKE :search OR user.lastName LIKE :search',
+        "user.email LIKE :search OR user.firstName LIKE :search OR user.lastName LIKE :search",
         { search: `%${search}%` },
       );
     }
 
     if (role) {
-      query.andWhere('user.role = :role', { role });
+      query.andWhere("user.role = :role", { role });
     }
 
     const [users, total] = await query
-      .orderBy('user.createdAt', 'DESC')
+      .orderBy("user.createdAt", "DESC")
       .take(limit)
       .skip(offset)
       .getManyAndCount();
@@ -251,7 +274,7 @@ export class UsersService {
   async toggleActive(id: number): Promise<User> {
     const user = await this.findById(id);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     await this.userRepository.update(id, { isActive: !user.isActive });
@@ -265,7 +288,7 @@ export class UsersService {
   async getInstructors(): Promise<User[]> {
     return this.userRepository.find({
       where: { role: UserRole.INSTRUCTOR, isActive: true },
-      select: ['id', 'email', 'firstName', 'lastName', 'avatar', 'bio'],
+      select: ["id", "email", "firstName", "lastName", "avatar", "bio"],
     });
   }
 }

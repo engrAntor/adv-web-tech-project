@@ -1,6 +1,6 @@
 // src/email/email.service.ts
-import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import { Injectable } from "@nestjs/common";
+import * as nodemailer from "nodemailer";
 
 @Injectable()
 export class EmailService {
@@ -9,9 +9,9 @@ export class EmailService {
   constructor() {
     // Create transporter with SMTP settings
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+      host: process.env.SMTP_HOST || "smtp.gmail.com",
+      port: parseInt(process.env.SMTP_PORT || "587"),
+      secure: process.env.SMTP_SECURE === "true", // true for 465, false for other ports
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -30,13 +30,13 @@ export class EmailService {
       console.log(`Email sent successfully to ${to}`);
       return true;
     } catch (error) {
-      console.error('Failed to send email:', error);
+      console.error("Failed to send email:", error);
       return false;
     }
   }
 
   async sendOTP(to: string, otp: string): Promise<boolean> {
-    const subject = 'Password Reset OTP - Learning Platform';
+    const subject = "Password Reset OTP - Learning Platform";
     const html = `
       <!DOCTYPE html>
       <html>
@@ -77,7 +77,7 @@ export class EmailService {
   }
 
   async sendEmailVerification(to: string, otp: string): Promise<boolean> {
-    const subject = 'Verify Your Email - Learning Platform';
+    const subject = "Verify Your Email - Learning Platform";
     const html = `
       <!DOCTYPE html>
       <html>
@@ -117,7 +117,7 @@ export class EmailService {
   }
 
   async sendWelcomeEmail(to: string, firstName: string): Promise<boolean> {
-    const subject = 'Welcome to Learning Platform!';
+    const subject = "Welcome to Learning Platform!";
     const html = `
       <!DOCTYPE html>
       <html>
@@ -134,7 +134,7 @@ export class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <h1>Welcome, ${firstName || 'Learner'}!</h1>
+            <h1>Welcome, ${firstName || "Learner"}!</h1>
           </div>
           <div class="content">
             <p>Your email has been verified successfully!</p>
@@ -164,7 +164,7 @@ export class EmailService {
     subject: string,
     message: string,
   ): Promise<boolean> {
-    const adminEmail = 'engr.antor.3@gmail.com';
+    const adminEmail = "engr.antor.3@gmail.com";
     const emailSubject = `New Contact Form Submission: ${subject}`;
     const html = `
       <!DOCTYPE html>
@@ -198,7 +198,7 @@ export class EmailService {
             </div>
             <div class="message-box">
               <p class="label">Message:</p>
-              <p>${message.replace(/\n/g, '<br>')}</p>
+              <p>${message.replace(/\n/g, "<br>")}</p>
             </div>
             <p>Please respond to this inquiry as soon as possible.</p>
           </div>
@@ -220,7 +220,10 @@ export class EmailService {
     replyContent: string,
   ): Promise<boolean> {
     const subject = `New reply to your post: "${postTitle}"`;
-    const replyPreview = replyContent.length > 200 ? replyContent.substring(0, 200) + '...' : replyContent;
+    const replyPreview =
+      replyContent.length > 200
+        ? replyContent.substring(0, 200) + "..."
+        : replyContent;
     const html = `
       <!DOCTYPE html>
       <html>
@@ -267,7 +270,7 @@ export class EmailService {
     email: string,
     subject: string,
   ): Promise<boolean> {
-    const emailSubject = 'We received your message - Learning Platform';
+    const emailSubject = "We received your message - Learning Platform";
     const html = `
       <!DOCTYPE html>
       <html>

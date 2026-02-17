@@ -1,8 +1,8 @@
 // src/notifications/notifications.service.ts
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Notification, NotificationType } from './notification.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Notification, NotificationType } from "./notification.entity";
 
 @Injectable()
 export class NotificationsService {
@@ -28,13 +28,18 @@ export class NotificationsService {
     return this.notificationRepository.save(notification);
   }
 
-  async findAllByUser(userId: number, limit = 20, offset = 0): Promise<{ notifications: Notification[]; total: number }> {
-    const [notifications, total] = await this.notificationRepository.findAndCount({
-      where: { userId },
-      order: { createdAt: 'DESC' },
-      take: limit,
-      skip: offset,
-    });
+  async findAllByUser(
+    userId: number,
+    limit = 20,
+    offset = 0,
+  ): Promise<{ notifications: Notification[]; total: number }> {
+    const [notifications, total] =
+      await this.notificationRepository.findAndCount({
+        where: { userId },
+        order: { createdAt: "DESC" },
+        take: limit,
+        skip: offset,
+      });
     return { notifications, total };
   }
 
@@ -50,7 +55,10 @@ export class NotificationsService {
   }
 
   async markAllAsRead(userId: number): Promise<void> {
-    await this.notificationRepository.update({ userId, isRead: false }, { isRead: true });
+    await this.notificationRepository.update(
+      { userId, isRead: false },
+      { isRead: true },
+    );
   }
 
   async delete(id: number, userId: number): Promise<void> {
@@ -64,7 +72,7 @@ export class NotificationsService {
     type: NotificationType = NotificationType.SYSTEM,
     link?: string,
   ): Promise<void> {
-    const notifications = userIds.map(userId => ({
+    const notifications = userIds.map((userId) => ({
       userId,
       title,
       message,

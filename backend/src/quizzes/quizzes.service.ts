@@ -1,13 +1,19 @@
 // src/quizzes/quizzes.service.ts
-import { Injectable, NotFoundException, BadRequestException, Inject, forwardRef } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Quiz } from './quiz.entity';
-import { QuizAttempt } from './quiz-attempt.entity';
-import { Question } from '../question/question.entity';
-import { Progress } from '../progress/progress.entity';
-import { NotificationsService } from '../notifications/notifications.service';
-import { NotificationType } from '../notifications/notification.entity';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Inject,
+  forwardRef,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Quiz } from "./quiz.entity";
+import { QuizAttempt } from "./quiz-attempt.entity";
+import { Question } from "../question/question.entity";
+import { Progress } from "../progress/progress.entity";
+import { NotificationsService } from "../notifications/notifications.service";
+import { NotificationType } from "../notifications/notification.entity";
 
 @Injectable()
 export class QuizzesService {
@@ -45,41 +51,41 @@ export class QuizzesService {
   async findAllQuizzes(): Promise<Quiz[]> {
     return this.quizRepository.find({
       where: { isPublished: true },
-      relations: ['course'],
-      order: { sortOrder: 'ASC' },
+      relations: ["course"],
+      order: { sortOrder: "ASC" },
     });
   }
 
   async findAllQuizzesForInstructor(instructorId: number): Promise<Quiz[]> {
     return this.quizRepository.find({
-      relations: ['course', 'questions'],
+      relations: ["course", "questions"],
       where: {
         course: {
           instructorId,
         },
       },
-      order: { createdAt: 'DESC' },
+      order: { createdAt: "DESC" },
     });
   }
 
   async findAllQuizzesAdmin(): Promise<Quiz[]> {
     return this.quizRepository.find({
-      relations: ['course', 'questions'],
-      order: { createdAt: 'DESC' },
+      relations: ["course", "questions"],
+      order: { createdAt: "DESC" },
     });
   }
 
   async findQuizzesByCourse(courseId: number): Promise<Quiz[]> {
     return this.quizRepository.find({
       where: { courseId, isPublished: true },
-      order: { sortOrder: 'ASC' },
+      order: { sortOrder: "ASC" },
     });
   }
 
   async findQuizById(id: number): Promise<Quiz | null> {
     return this.quizRepository.findOne({
       where: { id },
-      relations: ['questions', 'course'],
+      relations: ["questions", "course"],
     });
   }
 
@@ -90,11 +96,11 @@ export class QuizzesService {
     // Get the current quiz state before update
     const existingQuiz = await this.quizRepository.findOne({
       where: { id },
-      relations: ['course'],
+      relations: ["course"],
     });
 
     if (!existingQuiz) {
-      throw new NotFoundException('Quiz not found');
+      throw new NotFoundException("Quiz not found");
     }
 
     const wasUnpublished = !existingQuiz.isPublished;
@@ -113,13 +119,13 @@ export class QuizzesService {
     // Get all enrolled students for this course
     const enrolledStudents = await this.progressRepository.find({
       where: { courseId: quiz.courseId },
-      select: ['userId'],
+      select: ["userId"],
     });
 
     if (enrolledStudents.length === 0) return;
 
-    const userIds = enrolledStudents.map(p => p.userId);
-    const courseName = quiz.course?.title || 'your course';
+    const userIds = enrolledStudents.map((p) => p.userId);
+    const courseName = quiz.course?.title || "your course";
 
     await this.notificationsService.notifyEnrolledStudents(
       userIds,
@@ -144,7 +150,7 @@ export class QuizzesService {
     points = 1,
   ): Promise<Question> {
     const quiz = await this.quizRepository.findOneBy({ id: quizId });
-    if (!quiz) throw new NotFoundException('Quiz not found');
+    if (!quiz) throw new NotFoundException("Quiz not found");
 
     const question = this.questionRepository.create({
       quizId,
@@ -157,7 +163,10 @@ export class QuizzesService {
     return this.questionRepository.save(question);
   }
 
-  async updateQuestion(id: number, data: Partial<Question>): Promise<Question | null> {
+  async updateQuestion(
+    id: number,
+    data: Partial<Question>,
+  ): Promise<Question | null> {
     await this.questionRepository.update(id, data);
     return this.questionRepository.findOneBy({ id });
   }
@@ -170,10 +179,10 @@ export class QuizzesService {
   async startAttempt(userId: number, quizId: number): Promise<QuizAttempt> {
     const quiz = await this.quizRepository.findOne({
       where: { id: quizId },
-      relations: ['questions'],
+      relations: ["questions"],
     });
 
-    if (!quiz) throw new NotFoundException('Quiz not found');
+    if (!quiz) throw new NotFoundException("Quiz not found");
 
     if (quiz.maxAttempts > 0) {
       const attemptCount = await this.quizAttemptRepository.count({
@@ -181,7 +190,7 @@ export class QuizzesService {
       });
 
       if (attemptCount >= quiz.maxAttempts) {
-        throw new BadRequestException('Maximum attempts reached');
+        throw new BadRequestException("Maximum attempts reached");
       }
     }
 
@@ -206,10 +215,10 @@ export class QuizzesService {
   ): Promise<QuizAttempt> {
     const attempt = await this.quizAttemptRepository.findOne({
       where: { id: attemptId, userId },
-      relations: ['quiz', 'quiz.questions'],
+      relations: ["quiz", "quiz.questions"],
     });
 
-    if (!attempt) throw new NotFoundException('Attempt not found');
+    if (!attempt) throw new NotFoundException("Attempt not found");
 
     const quiz = attempt.quiz;
     let correctCount = 0;
@@ -227,7 +236,9 @@ export class QuizzesService {
 
     const score = totalPoints > 0 ? (earnedPoints / totalPoints) * 100 : 0;
     const passed = score >= quiz.passingScore;
-    const timeTaken = Math.floor((new Date().getTime() - attempt.startedAt.getTime()) / 1000);
+    const timeTaken = Math.floor(
+      (new Date().getTime() - attempt.startedAt.getTime()) / 1000,
+    );
 
     attempt.answers = answers;
     attempt.score = score;
@@ -238,21 +249,27 @@ export class QuizzesService {
     return this.quizAttemptRepository.save(attempt);
   }
 
-  async getAttemptResult(attemptId: number, userId: number): Promise<QuizAttempt | null> {
+  async getAttemptResult(
+    attemptId: number,
+    userId: number,
+  ): Promise<QuizAttempt | null> {
     return this.quizAttemptRepository.findOne({
       where: { id: attemptId, userId },
-      relations: ['quiz', 'quiz.questions'],
+      relations: ["quiz", "quiz.questions"],
     });
   }
 
-  async getUserAttempts(userId: number, quizId?: number): Promise<QuizAttempt[]> {
+  async getUserAttempts(
+    userId: number,
+    quizId?: number,
+  ): Promise<QuizAttempt[]> {
     const where: any = { userId };
     if (quizId) where.quizId = quizId;
 
     return this.quizAttemptRepository.find({
       where,
-      relations: ['quiz'],
-      order: { completedAt: 'DESC' },
+      relations: ["quiz"],
+      order: { completedAt: "DESC" },
     });
   }
 
