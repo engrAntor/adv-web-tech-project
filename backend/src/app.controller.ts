@@ -18,4 +18,13 @@ export class AppController {
       uptime: process.uptime(),
     };
   }
+
+  @Get('healthz')
+  healthCheckZ() {
+    return {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    };
+  }
 }
