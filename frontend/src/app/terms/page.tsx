@@ -65,12 +65,12 @@ export default function TermsPage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <section className="border-b bg-muted/50 py-12 sm:py-20">
-        <div className="container text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-            <FileText className="h-8 w-8 text-primary" />
+      <section className="border-b bg-muted/50 py-8 sm:py-12 md:py-20">
+        <div className="container px-4 sm:px-6 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full mb-3 sm:mb-4">
+            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4">Terms of Service</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Terms of Service</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
             Please read these terms carefully before using our platform.
           </p>
@@ -81,13 +81,13 @@ export default function TermsPage() {
       </section>
 
       {/* Content */}
-      <section className="container py-12">
-        <div className="max-w-3xl mx-auto space-y-6">
+      <section className="container px-4 sm:px-6 py-8 sm:py-12">
+        <div className="max-w-3xl mx-auto space-y-4 sm:space-y-6">
           {sections.map((section, index) => (
             <Card key={index}>
-              <CardContent className="pt-6">
-                <h2 className="text-lg font-semibold mb-3">{section.title}</h2>
-                <p className="text-muted-foreground text-sm leading-relaxed">
+              <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
+                <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">{section.title}</h2>
+                <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
                   {section.content}
                 </p>
               </CardContent>
@@ -97,8 +97,8 @@ export default function TermsPage() {
       </section>
 
       {/* Back */}
-      <section className="border-t bg-muted/50 py-8">
-        <div className="container text-center">
+      <section className="border-t bg-muted/50 py-6 sm:py-8 mt-auto">
+        <div className="container px-4 sm:px-6 text-center">
           <Button variant="outline" asChild>
             <Link href="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
