@@ -71,6 +71,9 @@ import { Invoice } from "./payments/invoice.entity";
 // Email
 import { EmailModule } from "./email/email.module";
 
+// Seed
+import { SeedModule } from "./seeds/seed.module";
+
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -141,6 +144,8 @@ import { EmailModule } from "./email/email.module";
     EnrollmentsModule,
     // Payments
     PaymentsModule,
+    // Seed (auto-seeds courses on first run)
+    SeedModule,
   ],
   controllers: [AppController],
   providers: [AppService],

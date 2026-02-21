@@ -113,16 +113,19 @@ export function ChatWidget({ className }: ChatWidgetProps) {
 
   if (!isOpen) {
     return (
-      <Button
-        onClick={() => setIsOpen(true)}
-        className={cn(
-          'fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-xl z-50 bg-primary hover:bg-primary/90 transition-all duration-300 hover:scale-105',
-          className
-        )}
-        size="icon"
-      >
-        <MessageCircle className="h-6 w-6" />
-      </Button>
+      <div className={cn('fixed bottom-6 right-6 z-50', className)}>
+        {/* Ping ring animation */}
+        <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" />
+        {/* Outer glow pulse */}
+        <span className="absolute -inset-1 rounded-full bg-primary/20 animate-pulse" />
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="relative h-14 w-14 rounded-full shadow-xl bg-primary hover:bg-primary/90 transition-all duration-300 hover:scale-110"
+          size="icon"
+        >
+          <MessageCircle className="h-6 w-6 animate-bounce" />
+        </Button>
+      </div>
     );
   }
 
