@@ -1,33 +1,33 @@
 // src/email/email.service.ts
 import { Injectable } from "@nestjs/common";
-import * as nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 @Injectable()
 export class EmailService {
-  private transporter: nodemailer.Transporter;
+  private resend: Resend;
+  private fromEmail: string;
 
   constructor() {
-    // Create transporter with SMTP settings
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || "smtp.gmail.com",
-      port: parseInt(process.env.SMTP_PORT || "587"),
-      secure: process.env.SMTP_SECURE === "true", // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+    this.resend = new Resend(process.env.RESEND_API_KEY);
+    // Use Resend's default domain, or your verified domain
+    this.fromEmail = process.env.FROM_EMAIL || "Learning Platform <onboarding@resend.dev>";
   }
 
   async sendMail(to: string, subject: string, html: string): Promise<boolean> {
     try {
-      await this.transporter.sendMail({
-        from: `"Learning Platform" <${process.env.SMTP_USER}>`,
+      const { data, error } = await this.resend.emails.send({
+        from: this.fromEmail,
         to,
         subject,
         html,
       });
-      console.log(`Email sent successfully to ${to}`);
+
+      if (error) {
+        console.error("Failed to send email:", error);
+        return false;
+      }
+
+      console.log(`Email sent successfully to ${to}, id: ${data?.id}`);
       return true;
     } catch (error) {
       console.error("Failed to send email:", error);

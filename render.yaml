@@ -22,3 +22,5 @@ services:
         sync: false
       - key: FRONTEND_URL
         sync: false
+      - key: RESEND_API_KEY
+        sync: false
